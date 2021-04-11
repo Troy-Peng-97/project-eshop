@@ -13,6 +13,7 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
   const [checkoutToken, setCheckoutToken] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
   const [shippingData, setShippingData] = useState({});
+  const [shippingInfo, setShippingInfo] = useState({label: '', price: '', priceRaw: 0});
   const classes = useStyles();
   const history = useHistory();
 
@@ -20,22 +21,26 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
   const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
   useEffect(() => {
-    const generateToken = async () => {
+    if (cart.id) {
+      const generateToken = async () => {
         try {
           const token = await commerce.checkout.generateToken(cart.id, { type: 'cart' });
-        console.log(token);
-        setCheckoutToken(token);
-      } catch {
-        if (activeStep !== steps.length) history.push('/');
-      }
-    };
-
-    generateToken();
+          setCheckoutToken(token);
+        } catch {
+          if (activeStep !== steps.length) history.push('/');
+        }
+      };
+      generateToken();
+    }
   }, [cart]);
 
   const test = (data) => {
     setShippingData(data);
-
+    setShippingInfo({
+      label: `${data?.shippingOptions[0]?.description} Shipping`,
+      price: data?.shippingOptions[0]?.price.formatted_with_symbol,
+      priceRaw: data?.shippingOptions[0]?.price.raw
+    })
     nextStep();
   };
 
@@ -66,9 +71,11 @@ const Checkout = ({ cart, onCaptureCheckout, order, error }) => {
   }
 
   const Form = () => (activeStep === 0
-    ? <AddressForm checkoutToken={checkoutToken} nextStep={nextStep} setShippingData={setShippingData} test={test} />
-    : <PaymentForm checkoutToken={checkoutToken} nextStep={nextStep} backStep={backStep} shippingData={shippingData} onCaptureCheckout={onCaptureCheckout} />);
-
+    ? <AddressForm checkoutToken={checkoutToken} nextStep={nextStep} setShippingData={setShippingData} test={test}/>
+    : <PaymentForm checkoutToken={checkoutToken} nextStep={nextStep} backStep={backStep} shippingData={shippingData} shippingInfo={shippingInfo} onCaptureCheckout={onCaptureCheckout} />);
+  
+  console.log(shippingData);
+  console.log(checkoutToken);
   return (
     <>
       <CssBaseline />

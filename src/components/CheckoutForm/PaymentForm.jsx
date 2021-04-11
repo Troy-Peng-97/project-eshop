@@ -7,7 +7,7 @@ import Review from './Review';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
-const PaymentForm = ({ checkoutToken, nextStep, backStep, shippingData, onCaptureCheckout }) => {
+const PaymentForm = ({ checkoutToken, nextStep, backStep, shippingData, shippingInfo, onCaptureCheckout }) => {
   const handleSubmit = async (event, elements, stripe) => {
     event.preventDefault();
 
@@ -38,10 +38,10 @@ const PaymentForm = ({ checkoutToken, nextStep, backStep, shippingData, onCaptur
       nextStep();
     }
   };
-
+  console.log(shippingData);
   return (
     <>
-      <Review checkoutToken={checkoutToken} />
+      <Review checkoutToken={checkoutToken} shippingInfo={shippingInfo}/>
       <Divider />
       <Typography variant="h6" gutterBottom style={{ margin: '20px 0' }}>Payment method</Typography>
       <Elements stripe={stripePromise}>
@@ -52,7 +52,7 @@ const PaymentForm = ({ checkoutToken, nextStep, backStep, shippingData, onCaptur
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Button variant="outlined" onClick={backStep}>Back</Button>
               <Button type="submit" variant="contained" disabled={!stripe} color="primary">
-                Pay {checkoutToken.live.subtotal.formatted_with_symbol}
+                Pay {`${checkoutToken.live.subtotal.formatted_with_symbol.charAt(0)}${checkoutToken.live.subtotal.raw + shippingInfo.priceRaw}`}
               </Button>
             </div>
           </form>

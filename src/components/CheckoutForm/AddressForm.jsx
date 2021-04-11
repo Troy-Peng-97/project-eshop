@@ -31,7 +31,6 @@ const AddressForm = ({ checkoutToken, test }) => {
 
   const fetchShippingOptions = async (checkoutTokenId, country, stateProvince = null) => {
     const options = await commerce.checkout.getShippingOptions(checkoutTokenId, { country, region: stateProvince });
-
     setShippingOptions(options);
     setShippingOption(options[0].id);
   };
@@ -52,7 +51,7 @@ const AddressForm = ({ checkoutToken, test }) => {
     <>
       <Typography variant="h6" gutterBottom>Shipping address</Typography>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit((data) => test({ ...data, shippingCountry, shippingSubdivision, shippingOption }))}>
+        <form onSubmit={methods.handleSubmit((data) => test({ ...data, shippingCountry, shippingSubdivision, shippingOptions, shippingOption }))}>
           <Grid container spacing={3}>
             <FormInput required name="firstName" label="First name" />
             <FormInput required name="lastName" label="Last name" />
