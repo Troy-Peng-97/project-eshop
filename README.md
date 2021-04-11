@@ -1,6 +1,10 @@
 **Live Link**: https://geekify.netlify.app/
 
-Features:\
+Features:
+- E-commerce Web Shop with fashioned UI
+- Easy to fill checkout form
+- Easy and secure payment with Credit/Debit Card
+- All transactions backuped by Commerce and Stripe
 
 
 
